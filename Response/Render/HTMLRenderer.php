@@ -2,6 +2,8 @@
 
 namespace Response\Render;
 
+require_once __DIR__ . '/../HTTPRenderer.php';
+
 use Response\HTTPRenderer;
 
 class HTMLRenderer implements HTTPRenderer

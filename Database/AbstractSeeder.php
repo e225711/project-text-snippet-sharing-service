@@ -2,6 +2,9 @@
 
 namespace Database;
 
+require_once 'MySQLWrapper.php';
+require_once 'Seeder.php';
+
 use Database\MySQLWrapper;
 
 abstract class AbstractSeeder implements Seeder

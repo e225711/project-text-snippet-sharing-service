@@ -2,6 +2,8 @@
 
 namespace Helpers;
 
+require_once __DIR__ . '/../Database/MySQLWrapper.php';
+
 use Database\MySQLWrapper;
 use Exception;
 

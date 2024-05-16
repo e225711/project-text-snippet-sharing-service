@@ -2,6 +2,9 @@
 
 namespace Commands\Programs;
 
+require_once __DIR__ . '/../../AbstractCommand.php';
+require_once __DIR__ . '/../../Argument.php';
+
 use Commands\AbstractCommand;
 use Commands\Argument;
 
@@ -58,6 +61,8 @@ class CodeGeneration extends AbstractCommand
 <?php
 
 namespace Database\Migrations;
+
+require_once __DIR__ . '/../SchemaMigration.php';
 
 use Database\SchemaMigration;
 

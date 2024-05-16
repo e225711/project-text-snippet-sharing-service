@@ -1,5 +1,12 @@
 <?php
 
+require_once __DIR__ . '/../Helpers/DatabaseHelper.php';
+require_once __DIR__ . '/../Helpers/ValidationHelper.php';
+require_once __DIR__ . '/../Response/HTTPRenderer.php';
+require_once __DIR__ . '/../Response/Render/HTMLRenderer.php';
+require_once __DIR__ . '/../Response/Render/JSONRenderer.php';
+
+
 use Helpers\DatabaseHelper;
 use Helpers\ValidationHelper;
 use Response\HTTPRenderer;

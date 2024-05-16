@@ -2,6 +2,8 @@
 
 namespace Database\Migrations;
 
+require_once __DIR__ . '/../SchemaMigration.php';
+
 use Database\SchemaMigration;
 
 class CreateSnippetTable1 implements SchemaMigration

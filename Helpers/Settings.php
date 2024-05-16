@@ -2,6 +2,8 @@
 
 namespace Helpers;
 
+require_once __DIR__ . '/../Exceptions/ReadAndParseEnvException.php';
+
 use Exceptions\ReadAndParseEnvException;
 
 class Settings

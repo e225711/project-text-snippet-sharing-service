@@ -2,6 +2,10 @@
 
 namespace Commands\Programs;
 
+require_once __DIR__ . '../../AbstractCommand.php';
+require_once __DIR__ . '../../Database/MySQLWrapper.php';
+require_once __DIR__ . '../../Database/Seeder.php';
+
 use Commands\AbstractCommand;
 use Database\MySQLWrapper;
 use Database\Seeder;
