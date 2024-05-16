@@ -4,6 +4,7 @@ namespace Database;
 
 require_once __DIR__ . '/../Helpers/Settings.php';
 
+
 use mysqli;
 use Helpers\Settings;
 

@@ -50,6 +50,6 @@ return [
         }
     },
     'Snippet' => function () {
-        return new HTMLRenderer('component/Snippet');
+        return new HTMLRenderer('component/snippet');
     },
 ];
