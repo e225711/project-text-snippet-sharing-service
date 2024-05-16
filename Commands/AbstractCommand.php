@@ -2,6 +2,8 @@
 
 namespace Commands;
 
+require_once __DIR__ . '/Command.php';
+
 use Exception;
 
 abstract class AbstractCommand implements Command
