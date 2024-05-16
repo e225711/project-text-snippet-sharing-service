@@ -7,33 +7,61 @@ use Exception;
 
 class DatabaseHelper
 {
-  public static function getRandomComputerPart(): array
+  public static function saveSnippet(string $snippet_name, string $expiry_date, string $code_type, string $content, string $hash): bool
   {
+    // Validate snippet_name
+    if (empty($snippet_name) || strlen($snippet_name) > 255) {
+      throw new Exception('Invalid snippet_name. It must be a non-empty string with a maximum length of 255 characters.');
+    }
+
+    // Calculate expiry_date_time
+    $valid_durations = ['1 minute', '10 minutes', '1 hour', '1 day', 'Permanent'];
+    if (!in_array($expiry_date, $valid_durations)) {
+      throw new Exception('Invalid expiry_date. It must be one of the following values: ' . implode(', ', $valid_durations));
+    }
+
+    $expiry_date_time = null;
+    if ($expiry_date === 'Permanent') {
+      // Permanent, set expiry_date_time to null or a far future date
+      $expiry_date_time = '9999-12-31 23:59:59'; // Far future date with time
+    } else {
+      // Calculate the expiry date based on the current time
+      $expiry_date_time = (new \DateTime())->modify('+' . $expiry_date)->format('Y-m-d H:i:s');
+    }
+
+    // Validate code_type
+    if (empty($code_type) || strlen($code_type) > 255) {
+      throw new Exception('Invalid code_type. It must be a non-empty string with a maximum length of 255 characters.');
+    }
+
+    // Validate content
+    if (empty($content)) {
+      throw new Exception('Invalid content. It must be a non-empty string.');
+    }
+
     $db = new MySQLWrapper();
 
-    $stmt = $db->prepare("SELECT * FROM computer_parts ORDER BY RAND() LIMIT 1");
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $part = $result->fetch_assoc();
+    $stmt = $db->prepare("
+            INSERT INTO snippet (snippet_name, expiry_date, code_type, content, hash)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+    if (!$stmt) {
+      throw new Exception('Prepare statement failed: ' . $db->error);
+    }
 
-    if (!$part) throw new Exception('Could not find a single part in database');
+    $stmt->bind_param('sssss', $snippet_name, $expiry_date_time, $code_type, $content, $hash);
+    $success = $stmt->execute();
 
-    return $part;
+    if (!$success) {
+      throw new Exception('Could not insert snippet into database: ' . $stmt->error);
+    }
+
+    return $success;
   }
 
-  public static function getComputerPartById(int $id): array
+  private static function isValidDate(string $date): bool
   {
-    $db = new MySQLWrapper();
-
-    $stmt = $db->prepare("SELECT * FROM computer_parts WHERE id = ?");
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    $part = $result->fetch_assoc();
-
-    if (!$part) throw new Exception('Could not find a single part in database');
-
-    return $part;
+    $d = \DateTime::createFromFormat('Y-m-d H:i:s', $date);
+    return $d && $d->format('Y-m-d H:i:s') === $date;
   }
 }

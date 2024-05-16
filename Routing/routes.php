@@ -7,25 +7,42 @@ use Response\Render\HTMLRenderer;
 use Response\Render\JSONRenderer;
 
 return [
-    'random/part'=>function(): HTTPRenderer{
-        $part = DatabaseHelper::getRandomComputerPart();
+    '' => function () {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            return new HTMLRenderer('component/inputSnippet');
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // POSTデータを取得
+                $title = $_POST['title'];
+                $language = $_POST['language'];
+                $expiry = $_POST['expiry'];
+                $content = $_POST['content'];
 
-        return new HTMLRenderer('component/random-part', ['part'=>$part]);
-    },
-    'parts'=>function(): HTTPRenderer{
-        // IDの検証
-        $id = ValidationHelper::integer($_GET['id']??null);
+                $input = $title . $content;
+                $hash = hash('crc32', $input);
 
-        $part = DatabaseHelper::getComputerPartById($id);
-        return new HTMLRenderer('component/parts', ['part'=>$part]);
+                // DatabaseHelperを使用してスニペットを保存
+                $success = \Helpers\DatabaseHelper::saveSnippet($title, $expiry, $language, $content, $hash);
+
+                if ($success) {
+                    $host = $_SERVER['HTTP_HOST'];
+
+                    // Snippetへのリンクを作成
+                    $snippetLink = "http://$host/Snippet?hash=$hash";
+
+                    // JSONレスポンスを作成
+                    return new JSONRenderer(['snippetLink' => $snippetLink]);
+                } else {
+                    // データベースへの挿入に失敗した場合の処理
+                    return new JSONRenderer(['error' => 'Failed to insert snippet into database']);
+                }
+            } catch (Exception $e) {
+                // エラーが発生した場合の処理
+                return new JSONRenderer(['error' => 'Internal error: ' . $e->getMessage()]);
+            }
+        }
     },
-    'api/random/part'=>function(): HTTPRenderer{
-        $part = DatabaseHelper::getRandomComputerPart();
-        return new JSONRenderer(['part'=>$part]);
-    },
-    'api/parts'=>function(){
-        $id = ValidationHelper::integer($_GET['id']??null);
-        $part = DatabaseHelper::getComputerPartById($id);
-        return new JSONRenderer(['part'=>$part]);
+    'Snippet' => function () {
+        return new HTMLRenderer('component/Snippet');
     },
 ];

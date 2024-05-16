@@ -20,7 +20,7 @@ if (isset($routes[$path])) {
     // ヘッダーを設定します。
     foreach ($renderer->getFields() as $name => $value) {
       // ヘッダーに対する単純な検証を実行します。
-      $sanitized_value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+      $sanitized_value = filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
 
       if ($sanitized_value && $sanitized_value === $value) {
         header("{$name}: {$sanitized_value}");
